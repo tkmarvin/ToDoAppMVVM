@@ -14,53 +14,67 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun AddEditTodoScreen(onPopBackStack: () -> Unit, viewModel: AddEditViewModel = hiltViewModel()){
+fun AddEditTodoScreen(
+    onPopBackStack: () -> Unit,
+    viewModel: AddEditViewModel = hiltViewModel()
+) {
     val scaffoldState = rememberScaffoldState()
-    LaunchedEffect(key1 = true){
-        viewModel.uiEvent.collect {
-            when(it){
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
                 is UiEvent.PopBackStack -> onPopBackStack()
-                is UiEvent.ShowSnackbar ->{
+                is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
-                        message = it.message,
-                        actionLabel = it.action
+                        message = event.message,
+                        actionLabel = event.action
                     )
                 }
                 else -> Unit
             }
         }
     }
-    
-    Scaffold(scaffoldState = scaffoldState,
-    modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp),
-    floatingActionButton = {
-        FloatingActionButton(onClick = {
-            viewModel.onEvent(AddEditTodoEvent.OnSavedTodoClick)
-        }) {
-            Icon(imageVector = Icons.Default.Check, contentDescription = "Save")
+    Scaffold(
+        scaffoldState = scaffoldState,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                viewModel.onEvent(AddEditTodoEvent.OnSavedTodoClick)
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Save"
+                )
+            }
         }
-    }) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             TextField(
                 value = viewModel.title,
-                onValueChange = { viewModel.onEvent(AddEditTodoEvent.OnTitleChange(it)) },
-                placeholder ={Text(text = "Title")},
+                onValueChange = {
+                    viewModel.onEvent(AddEditTodoEvent.OnTitleChange(it))
+                },
+                placeholder = {
+                    Text(text = "Title")
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = viewModel.description,
-                onValueChange = { viewModel.onEvent(AddEditTodoEvent.OnDescriptionChange(it)) },
-                placeholder ={Text(text = "Description")},
+                onValueChange = {
+                    viewModel.onEvent(AddEditTodoEvent.OnDescriptionChange(it))
+                },
+                placeholder = {
+                    Text(text = "Description")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = false,
                 maxLines = 5
             )
-            
         }
-
     }
-
 }

@@ -21,18 +21,18 @@ fun TodoItem(todo: Todo, onEvent: (TodoListEvent) -> Unit, modifier: Modifier = 
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Center) {
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = todo.title,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
-
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = {
                     onEvent(TodoListEvent.OnDeleteTodoClick(todo))
@@ -41,21 +41,18 @@ fun TodoItem(todo: Todo, onEvent: (TodoListEvent) -> Unit, modifier: Modifier = 
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete"
                     )
-
-                }
-
-                todo.description.let {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = it!!)
                 }
             }
-
+            todo.description?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it)
+            }
         }
-
-        Checkbox(checked = todo.isDone,
+        Checkbox(
+            checked = todo.isDone,
             onCheckedChange = { isChecked ->
-            onEvent(TodoListEvent.OnDoneChange(todo,isChecked))
-        })
-
+                onEvent(TodoListEvent.OnDoneChange(todo, isChecked))
+            }
+        )
     }
 }
